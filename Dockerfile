@@ -1,15 +1,41 @@
-FROM alpine:latest
+FROM ubuntu:22.04
 
-RUN apk --update --no-cache add curl ca-certificates nginx
-RUN apk add php84 php84-xml php84-exif php84-fpm php84-session php84-soap php84-openssl php84-gmp php84-pdo_odbc php84-json php84-dom php84-pdo php84-zip php84-mysqli php84-sqlite3 php84-pdo_pgsql php84-bcmath php84-gd php84-odbc php84-pdo_mysql php84-pdo_sqlite php84-gettext php84-xmlreader php84-bz2 php84-iconv php84-pdo_dblib php84-curl php84-ctype php84-phar php84-fileinfo php84-mbstring php84-tokenizer php84-simplexml
-COPY --from=composer:latest  /usr/bin/composer /usr/bin/composer
+ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:ondrej/php && \
+    apt-get update && \
+    apt-get install -y \
+    nginx \
+    curl \
+    ca-certificates \
+    php8.4 \
+    php8.4-cli \
+    php8.4-common \
+    php8.4-mysql \
+    php8.4-zip \
+    php8.4-gd \
+    php8.4-mbstring \
+    php8.4-curl \
+    php8.4-xml \
+    php8.4-bcmath \
+    php8.4-sqlite3 \
+    php8.4-pgsql \
+    php8.4-fpm \
+    php8.4-soap \
+    php8.4-exif \
+    php8.4-tokenizer \
+    php8.4-simplexml \
+    composer \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m container
 USER container
-ENV  USER container
-ENV HOME /home/container
-
+ENV USER=container
+ENV HOME=/home/container
 WORKDIR /home/container
+
 COPY ./entrypoint.sh /entrypoint.sh
 
-
-CMD ["/bin/ash", "/entrypoint.sh"]
+CMD ["/bin/bash", "/entrypoint.sh"]
