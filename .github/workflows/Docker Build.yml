@@ -39,4 +39,4 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/srithana-phong/nginx-php:8.4
+            ghcr.io/srithana-phong/nginx-php-test:8.4
